@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
+//apply plugin: 'signing'
 
 task eocvDocs(type: Javadoc) {
     group = "Documentation"
@@ -39,9 +39,9 @@ ext["signing.secretKeyRingFile"] = System.getenv('OPENFTC_GPG_KEY_FILE')
 ext["ossrhUsername"] = System.getenv('OPENFTC_SONATYPE_USER')
 ext["ossrhPassword"] = System.getenv('OPENFTC_SONATYPE_PASSWORD')
 
-signing {
-    sign publishing.publications
-}
+//signing {
+//    sign publishing.publications
+//}
 
 /*
  * https://developer.android.com/studio/build/maven-publish-plugin
@@ -100,21 +100,29 @@ afterEvaluate {
 
         repositories {
             // The repository to publish to, Sonatype/MavenCentral
+//            maven {
+//                // This is an arbitrary name, you may also use "mavencentral" or
+//                // any other name that's descriptive for you
+//                name = "mavencentral"
+//
+//                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+//                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+//                // You only need this if you want to publish snapshots, otherwise just set the URL
+//                // to the release repo directly
+//                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+//
+//                // The username and password we've fetched earlier
+//                credentials {
+//                    username System.getenv("OPENFTC_SONATYPE_USER")
+//                    password System.getenv("OPENFTC_SONATYPE_PASSWORD")
+//                }
+//            }
             maven {
-                // This is an arbitrary name, you may also use "mavencentral" or
-                // any other name that's descriptive for you
-                name = "mavencentral"
-
-                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-                // You only need this if you want to publish snapshots, otherwise just set the URL
-                // to the release repo directly
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-                // The username and password we've fetched earlier
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/nowireless/OpenCV-Repackaged")
                 credentials {
-                    username System.getenv("OPENFTC_SONATYPE_USER")
-                    password System.getenv("OPENFTC_SONATYPE_PASSWORD")
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
                 }
             }
         }
